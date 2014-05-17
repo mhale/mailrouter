@@ -61,11 +61,11 @@ There are four command line options.
 
 The default values are equivalent to:
 
-mailrouter -conf=/etc/mailrouter.conf -http=:8080 -smtp=:2525
+	mailrouter -conf=/etc/mailrouter.conf -http=:8080 -smtp=:2525
 
 To bind to a specified IPv4 address:
 
-mailrouter -http=127.0.0.1:80 -smtp=127.0.0.1:25
+	mailrouter -http=127.0.0.1:80 -smtp=127.0.0.1:25
 
 Any IP:port format accepted by Go will work, however IPv6 addresses have not been tested yet.
 
