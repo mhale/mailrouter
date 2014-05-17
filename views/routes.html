@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<link rel="shortcut icon" href="/assets/favicon.ico">
+		<title>Mailrouter</title>
+		<link href="/assets/bootstrap.min.css" rel="stylesheet">
+		<link href="/assets/mailrouter.css" rel="stylesheet">
+		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+		<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+
+		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">Mailrouter</a>
+				</div>
+				<div class="navbar-collapse collapse">
+					<ul class="nav navbar-nav navbar-left">
+						<li><a href="/">Dashboard</a></li>
+						<li><a href="/filters/">Filters</a></li>
+						<li><a href="/routes/">Routes</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+			<div class="row">
+				<div class="main">
+					<h1 class="page-header">Routes</h1>
+					<div class="well">
+						<form class="form-horizontal" role="form" id="route-form" accept-charset="UTF-8" method="post" action="/routes/{{.id}}">
+							<input name="_method" value="save" type="hidden" />
+							<legend>{{if .edit}}Edit{{else}}Add{{end}} Route</legend>
+							<div class="row">
+
+								<!-- Begin form left column -->
+								<div class="col-sm-6">
+									<div class="form-group">
+										<label for="name" class="col-sm-3 control-label">Name</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" name="routename" id="routename" value="{{.edit.Name}}" placeholder="Example route" required aria-required="true">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="to" class="col-sm-3 control-label">To</label>
+										<div class="col-sm-9">
+											<input type="email" class="form-control" name="to" id="to" value="{{.edit.To}}" placeholder="recipient@example.com">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="hostname" class="col-sm-3 control-label">Hostname</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" name="hostname" id="hostname" value="{{.edit.Hostname}}" placeholder="mail.example.com" required aria-required="true">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="port" class="col-sm-3 control-label">Port</label>
+										<div class="col-sm-9">
+											<input type="number" class="form-control" name="port" id="port" value="{{.edit.Port}}" placeholder="25" required aria-required="true" min="25" max="65535">
+										</div>
+									</div>
+								</div>
+								<!-- End form left column -->
+
+								<!-- Begin form right column -->
+								<!-- Disabled for now
+								<div class="col-sm-6">
+									<div class="form-group">
+										<label for="authentication" class="col-sm-3 control-label">Use <abbr title="Transport Layer Security">TLS</abbr></label>
+										<div class="col-sm-9">
+											<select class="form-control" name="tls" id="tls">
+												<option>Never</option>
+												<option>If Available</option>
+												<option>Always</option>
+											</select> 
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="authentication" class="col-sm-3 control-label">Authentication</label>
+										<div class="col-sm-9">
+											<select class="form-control" name="authentication" id="authentication">
+												<option value="none">None</option>
+												<option value="password">Password</option>
+											</select> 
+										</div>
+									</div>
+									<div class="form-group hidden" id="username-group">
+										<label for="username" class="col-sm-3 control-label">Username</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" name="username" id="username" placeholder="username">
+										</div>
+									</div>
+									<div class="form-group hidden" id="password-group">
+										<label for="password" class="col-sm-3 control-label">Password</label>
+										<div class="col-sm-9">
+											<input type="password" class="form-control" name="password" id="password" placeholder="password">
+										</div>
+									</div>
+								</div>
+								-->
+								<!-- End form right column -->
+
+							</div>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group">
+										<div class="col-sm-offset-3 col-sm-3">
+											<button type="submit" class="btn btn-primary">Save</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="table-responsive">
+						<table class="table table-striped" id="routes">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>To</th>
+									<th>Host</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+							</tfoot>
+							<tbody>
+								{{range $index, $route := .list}}
+								<tr>
+									<td>{{$route.Name}}{{if $route.IsDefault}} <span class="label label-primary">Default</span>{{end}}</td>
+									<td>{{$route.To}}</td>
+									<td>{{if ne $route.Id "DROP"}}{{$route.Hostname}}:{{$route.Port}}{{end}}</td>
+									<td>
+										{{if not $route.IsDefault}}
+										<a href="/routes/{{$route.Id}}/default" role="button" class="btn btn-primary" data-confirm="Changing default route to {{$route.Name}}, are you sure?" data-method="default" rel="nofollow">Make Default</a>
+										{{end}}
+										{{if ne $route.Id "DROP"}}
+										<a href="/routes/{{$route.Id}}/edit" role="button" class="btn btn-default">Edit</a>
+										<a href="/routes/{{$route.Id}}" role="button" class="btn btn-danger" data-confirm="Deleting route {{$route.Name}}, are you sure?" data-method="delete" rel="nofollow">Delete</a>
+										{{end}}
+									</td>
+								</tr>
+								{{end}}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="/assets/jquery.min.js"></script>
+		<script src="/assets/bootstrap.min.js"></script>
+		<script src="/assets/mailrouter.js"></script>
+	</body>
+</html>
+

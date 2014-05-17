@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<link rel="shortcut icon" href="/assets/favicon.ico">
+		<title>Mailrouter</title>
+		<link href="/assets/bootstrap.min.css" rel="stylesheet">
+		<link href="/assets/mailrouter.css" rel="stylesheet">
+		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+		<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+
+		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">Mailrouter</a>
+				</div>
+				<div class="navbar-collapse collapse">
+					<ul class="nav navbar-nav navbar-left">
+						<li><a href="/">Dashboard</a></li>
+						<li><a href="/filters/">Filters</a></li>
+						<li><a href="/routes/">Routes</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+			<div class="row">
+				<div class="main">
+					<h1 class="page-header">Filters</h1>
+					<div class="well">
+						<form class="form-horizontal" role="form" id="filter-form" accept-charset="UTF-8" method="post" action="/filters/{{.id}}">
+							<legend>{{if .edit}}Edit{{else}}Add{{end}} Filter</legend>
+							<div class="row">
+
+								<!-- Begin form left column -->
+								<div class="col-sm-6">
+									<div class="form-group">
+										<label for="order" class="col-sm-3 control-label">Order</label>
+										<div class="col-sm-9">
+											<input type="number" class="form-control" name="order" id="order" value="{{.edit.Order}}" placeholder="1">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="name" class="col-sm-3 control-label">Name</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" name="filtername" id="filtername" value="{{.edit.Name}}" placeholder="Example filter" required aria-required="true">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="recipient" class="col-sm-3 control-label">From</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" name="from" id="from" value="{{.edit.From}}" placeholder="sender@example.com">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="hostname" class="col-sm-3 control-label">To</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" name="to" id="to" value="{{.edit.To}}" placeholder="recipient@example.com">
+										</div>
+									</div>
+								</div>
+								<!-- End form left column -->
+
+								<!-- Begin form right column -->
+								<div class="col-sm-6">
+									<div class="form-group" id="subject-group">
+										<label for="subject" class="col-sm-3 control-label">Subject</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" name="subject" id="subject" value="{{.edit.Subject}}" placeholder="Example subject">
+										</div>
+									</div>
+									<div class="form-group" id="origin-group">
+										<label for="origin" class="col-sm-3 control-label">Originating IP</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" name="origin" id="origin" value="{{.edit.Origin}}" placeholder="10.0.0.1/24">
+										</div>
+									</div>
+									<div class="form-group" id="route-group">
+										<label for="route" class="col-sm-3 control-label">Route</label>
+										<div class="col-sm-9">
+											<select class="form-control" name="route-id" id="route-id">
+												{{$id := printf "%s" .edit.RouteId}}
+												{{range $index, $route := .routes}}
+												<option value="{{$route.Id}}"{{if eq $route.Id $id}} selected{{end}}>{{$route.Name}}{{if $route.IsDefault}} (default){{end}}</option>
+												{{end}}
+											</select>
+										</div>
+									</div>
+								</div>
+								<!-- End form right column -->
+
+							</div>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group">
+										<div class="col-sm-offset-3 col-sm-3">
+											<button type="submit" class="btn btn-primary">Save</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="table-responsive">
+						<table class="table table-striped" id="filters">
+							<thead>
+								<tr>
+									<th>Order</th>
+									<th>Name</th>
+									<th>Match On</th>
+									<th>Route</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+							</tfoot>
+							<tbody>
+								{{range $index, $filter := .list}}
+								<tr>
+									<td>{{$filter.Order}}</td>
+									<td>{{$filter.Name}}</td>
+									<td>{{$filter.Summary}}</td>
+									<td>{{$filter.RouteName}}</td>
+									<td>
+										<a href="/filters/{{$filter.Id}}/edit" role="button" class="btn btn-default">Edit</a>
+										<a href="/filters/{{$filter.Id}}" role="button" class="btn btn-danger" data-confirm="Deleting filter {{$filter.Name}}, are you sure?" data-method="delete" rel="nofollow">Delete</a>
+									</td>
+								</tr>
+								{{end}}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="/assets/jquery.min.js"></script>
+		<script src="/assets/bootstrap.min.js"></script>
+		<script src="/assets/mailrouter.js"></script>
+	</body>
+</html>
+
