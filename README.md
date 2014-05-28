@@ -19,14 +19,14 @@ It is intended to manage and redirect mail sent by deployed applications without
 
 ## Intended Use
 
-Mailrouter is intended to be placed between mail-sending applications and proper SMTP servers. It should then be used to route, readdress or drop mail messages as defined by filters on a dynamic basis.
+Mailrouter is intended to be placed between mail-sending applications and proper SMTP servers. It should then be used to route, forward or drop mail messages as defined by filters on a dynamic basis.
 
 For example: An organisation has a production mail server mail.example.com, a deployment of the [Mailcatcher](http://mailcatcher.me/) software at mc.example.com, and two versions of a deployed web application that can send user-defined emails. Two development versions of the application run on 10.0.0.1 and 10.0.0.2. A production version runs on 10.0.1.1.
 
 The organisation could set up:
 
 * A Route named Outbound to mail.example.com. All mail sent to this Route will be delivered to mail.example.com.
-* A Route named QA to mail.example.com with the To field set to qa@example.com. All mail sent to this Route will be delivered to qa@example.com on the mail server. This will allow the QA team to examine mail messages as they would be received by regular users.
+* A Route named QA to mail.example.com with the To field set to qa@example.com. All mail sent to this Route will be delivered to qa@example.com on the mail server, acting as an automatic forward. This will allow the QA team to examine mail messages as they would be received by regular users.
 * A route named Mailcatcher to mc.example.com.
 
 It could then set up the following:
@@ -71,6 +71,7 @@ Any IP:port format accepted by Go will work, however IPv6 addresses have not bee
 
 ## Tips
 
+* Create Routes first, so the drop-down Route selector is populated when Filters are created.
 * Define Filters in order beginning at 100, numbering the second Filter as 200, the third as 300, and so on. This provides flexibility later when inserting new Filters between existing Filters.
 * Filter fields are logical AND operations i.e. they must all match for the Filter to match. Place more specific Filters before general Filters.
 * Filters will be checked in the order displayed on the Filters page.
