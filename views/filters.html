@@ -45,6 +45,7 @@
 					<h1 class="page-header">Filters</h1>
 					<div class="well">
 						<form class="form-horizontal" role="form" id="filter-form" accept-charset="UTF-8" method="post" action="/filters/{{.id}}">
+							<input name="_method" value="save" type="hidden" />
 							<legend>{{if .edit}}Edit{{else}}Add{{end}} Filter</legend>
 							<div class="row">
 
