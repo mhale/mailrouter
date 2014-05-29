@@ -145,7 +145,7 @@ func routeHandler(w http.ResponseWriter, req *http.Request) {
 		}
 
 		if method == "default" {
-			msg = fmt.Sprintf("Set %s as default route.", config.Routes[id].Name)
+			msg = fmt.Sprintf("Set %s as the default route.", config.Routes[id].Name)
 			for id, route := range config.Routes {
 				route.IsDefault = false
 				config.Routes[id] = route
