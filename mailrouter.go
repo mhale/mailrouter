@@ -13,7 +13,6 @@ import (
 	"net/smtp"
 	"path/filepath"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/mhale/smtpd"
@@ -92,22 +91,6 @@ func mailHandler(origin net.Addr, from string, to []string, data []byte) {
 	logs.Add(originIP, from, to, subject, filterName, route.Name)
 }
 
-// Utility function for parsing URLs like /route/:id/:action
-func ParsePath(path string) (base string, id string, action string) {
-	path = strings.Trim(path, "/")
-	parts := strings.Split(path, "/")
-	if len(parts) > 0 {
-		base = parts[0]
-	}
-	if len(parts) > 1 {
-		id = parts[1]
-	}
-	if len(parts) > 2 {
-		action = parts[2]
-	}
-	return base, id, action
-}
-
 func routeHandler(w http.ResponseWriter, req *http.Request) {
 	var msg string
 	_, id, action := ParsePath(req.URL.Path)
@@ -121,6 +104,16 @@ func routeHandler(w http.ResponseWriter, req *http.Request) {
 		if id != "" && action == "edit" {
 			data["id"] = id
 			data["edit"] = config.Routes[id]
+		}
+
+		// Check for info and error messages passed via cookies. Clear any that are displayed.
+		msg = GetCookie(w, req, "info")
+		if msg != "" {
+			data["info"] = msg
+		}
+		msg = GetCookie(w, req, "error")
+		if msg != "" {
+			data["error"] = msg
 		}
 
 		// Render the page. Reparsing the template every time eases development at the expense of performance.
@@ -186,7 +179,13 @@ func routeHandler(w http.ResponseWriter, req *http.Request) {
 
 		if msg != "" {
 			log.Printf(msg)
-			SaveConfig()
+			SetCookie(w, "info", msg)
+			err := SaveConfig()
+			if err != nil {
+				msg = fmt.Sprintf("Failed to save configuration to file: %v", err)
+				log.Printf(msg)
+				SetCookie(w, "error", msg)
+			}
 		}
 
 		http.Redirect(w, req, "/routes/", http.StatusFound)
@@ -211,6 +210,16 @@ func filterHandler(w http.ResponseWriter, req *http.Request) {
 		if id != "" && action == "edit" {
 			data["id"] = id
 			data["edit"] = config.Filters[id]
+		}
+
+		// Check for info and error messages passed via cookies. Clear any that are displayed.
+		msg = GetCookie(w, req, "info")
+		if msg != "" {
+			data["info"] = msg
+		}
+		msg = GetCookie(w, req, "error")
+		if msg != "" {
+			data["error"] = msg
 		}
 
 		// Render the page. Reparsing the template every time eases development at the expense of performance.
@@ -263,7 +272,13 @@ func filterHandler(w http.ResponseWriter, req *http.Request) {
 
 		if msg != "" {
 			log.Printf(msg)
-			SaveConfig()
+			SetCookie(w, "info", msg)
+			err := SaveConfig()
+			if err != nil {
+				msg = fmt.Sprintf("Failed to save configuration to file: %v", err)
+				log.Printf(msg)
+				SetCookie(w, "error", msg)
+			}
 		}
 
 		http.Redirect(w, req, "/filters/", http.StatusFound)

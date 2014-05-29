@@ -43,6 +43,8 @@
 			<div class="row">
 				<div class="main">
 					<h1 class="page-header">Filters</h1>
+					{{if .info}}<div class="alert alert-info">{{.info}}</div>{{end}}
+					{{if .error}}<div class="alert alert-danger">{{.error}}</div>{{end}}
 					<div class="well">
 						<form class="form-horizontal" role="form" id="filter-form" accept-charset="UTF-8" method="post" action="/filters/{{.id}}">
 							<input name="_method" value="save" type="hidden" />
