@@ -237,7 +237,7 @@ func filterHandler(w http.ResponseWriter, req *http.Request) {
 		if method == "save" {
 			// Unset id means a new filter is being added
 			if id == "" {
-				msg = fmt.Sprintf("Added filter %s.", req.FormValue("filtername"), req.FormValue("hostname"))
+				msg = fmt.Sprintf("Added filter %s.", req.FormValue("filtername"))
 				uuid, _ := simpleuuid.NewTime(time.Now())
 				id = uuid.String()
 			} else {
