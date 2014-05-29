@@ -196,6 +196,10 @@ func filterHandler(w http.ResponseWriter, req *http.Request) {
 		data["list"] = SortedFilters()
 		data["routes"] = SortedRoutes()
 
+		if len(config.Routes) == 1 {
+			data["info"] = "No routes are defined. It is recommended to define routes before filters to populate the route drop-down menu below."
+		}
+
 		// Populate the form if requested.
 		if id != "" && action == "edit" {
 			data["id"] = id
