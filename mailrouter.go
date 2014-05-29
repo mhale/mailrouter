@@ -141,6 +141,13 @@ func routeHandler(w http.ResponseWriter, req *http.Request) {
 
 		if method == "delete" {
 			msg = fmt.Sprintf("Deleted route %s.", config.Routes[id].Name)
+			// If a default route was deleted, make Drop the default.
+			if config.Routes[id].IsDefault == true {
+				route := config.Routes["DROP"]
+				route.IsDefault = true
+				config.Routes["DROP"] = route
+				msg = fmt.Sprintf("%s The Drop route is now the default route.", msg)
+			}
 			delete(config.Routes, id)
 		}
 
