@@ -45,8 +45,9 @@ First get the dependencies:
 
 	go get github.com/mhale/smtpd
 	go get github.com/streadway/simpleuuid
+	go get github.com/jteeuwen/go-bindata
 
-Then install with:
+Then install each of them with:
 
 	go install
 
@@ -90,16 +91,15 @@ Any IP:port format accepted by Go will work, however IPv6 addresses have not bee
 
 ## Development
 
-Pull requests are welcome. To edit the assets or views, you will need to get the [go-bindata](https://github.com/jteeuwen/go-bindata/) tool to generate the bindata.go file:
+Pull requests are welcome. To edit the assets or views, you will need to get the [go-bindata](https://github.com/jteeuwen/go-bindata/) command line tool (which comes with the package) to generate the bindata.go file:
 
-	go get github.com/jteeuwen/go-bindata
-	cd github.com/jteeuwen/go-bindata
+	cd $GOPATH/src/github.com/jteeuwen/go-bindata/go-bindata
 	go install
 
 Then generate a shim with:
 
 	go-bindata -debug assets views
-	
+
 This will allow you to update the views and hit Refresh in your browser to see your changes without recompiling or restarting the program.
 
 ## Bugs / Issues
