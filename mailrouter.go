@@ -167,12 +167,14 @@ func routeHandler(w http.ResponseWriter, req *http.Request) {
 
 			// Create a new Route from the form submission.
 			port, _ := strconv.Atoi(req.FormValue("port"))
+			isDefault, _ := strconv.ParseBool(req.FormValue("isdefault"))
 			route := Route{
 				Id:       id,
 				Name:     req.FormValue("routename"),
 				To:       req.FormValue("to"),
 				Hostname: req.FormValue("hostname"),
 				Port:     port,
+				IsDefault: isDefault,
 			}
 			config.Routes[id] = route
 		}
