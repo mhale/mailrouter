@@ -83,6 +83,8 @@ func mailHandler(origin net.Addr, from string, to []string, data []byte) {
 	err = smtp.SendMail(addr, nil, from, to, data)
 	if err != nil {
 		log.Printf("Failed to deliver mail to route %s (%s): %s", route.Name, addr, err)
+		stats.Failed(len(data))
+		logs.Add(originIP, from, to, subject, filterName, "Failed")
 		return
 	}
 
