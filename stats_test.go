@@ -21,11 +21,17 @@ func TestStatsSent(t *testing.T) {
 	if stats.MsgsDropped != 0 {
 		t.Errorf("stats.MsgsDropped = %v, want %v", stats.MsgsDropped, 0)
 	}
+	if stats.MsgsFailed != 0 {
+		t.Errorf("stats.MsgsFailed = %v, want %v", stats.MsgsFailed, 0)
+	}
 	if stats.DataSent != n1 {
 		t.Errorf("stats.DataSent = %v, want %v", stats.DataSent, n1)
 	}
 	if stats.DataDropped != 0 {
 		t.Errorf("stats.DataDropped = %v, want %v", stats.DataDropped, 0)
+	}
+	if stats.DataFailed != 0 {
+		t.Errorf("stats.DataFailed = %v, want %v", stats.DataFailed, 0)
 	}
 
 	stats.Sent(n2)
@@ -35,11 +41,17 @@ func TestStatsSent(t *testing.T) {
 	if stats.MsgsDropped != 0 {
 		t.Errorf("stats.MsgsDropped = %v, want %v", stats.MsgsDropped, 0)
 	}
+	if stats.MsgsFailed != 0 {
+		t.Errorf("stats.MsgsFailed = %v, want %v", stats.MsgsFailed, 0)
+	}
 	if stats.DataSent != n1+n2 {
 		t.Errorf("stats.DataSent = %v, want %v", stats.DataSent, n1+n2)
 	}
 	if stats.DataDropped != 0 {
 		t.Errorf("stats.DataDropped = %v, want %v", stats.DataDropped, 0)
+	}
+	if stats.DataFailed != 0 {
+		t.Errorf("stats.DataFailed = %v, want %v", stats.DataFailed, 0)
 	}
 }
 
@@ -58,11 +70,17 @@ func TestStatsDropped(t *testing.T) {
 	if stats.MsgsDropped != 1 {
 		t.Errorf("stats.MsgsDropped = %v, want %v", stats.MsgsDropped, 1)
 	}
+	if stats.MsgsFailed != 0 {
+		t.Errorf("stats.MsgsFailed = %v, want %v", stats.MsgsFailed, 0)
+	}
 	if stats.DataSent != 0 {
 		t.Errorf("stats.DataSent = %v, want %v", stats.DataSent, 0)
 	}
 	if stats.DataDropped != n1 {
 		t.Errorf("stats.DataDropped = %v, want %v", stats.DataDropped, n1)
+	}
+	if stats.DataFailed != 0 {
+		t.Errorf("stats.DataFailed = %v, want %v", stats.DataFailed, 0)
 	}
 
 	stats.Dropped(n2)
@@ -72,10 +90,65 @@ func TestStatsDropped(t *testing.T) {
 	if stats.MsgsDropped != 2 {
 		t.Errorf("stats.MsgsDropped = %v, want %v", stats.MsgsDropped, 2)
 	}
+	if stats.MsgsFailed != 0 {
+		t.Errorf("stats.MsgsFailed = %v, want %v", stats.MsgsFailed, 0)
+	}
 	if stats.DataSent != 0 {
 		t.Errorf("stats.DataSent = %v, want %v", stats.DataSent, 0)
 	}
 	if stats.DataDropped != n1+n2 {
 		t.Errorf("stats.DataDropped = %v, want %v", stats.DataDropped, n1+n2)
+	}
+	if stats.DataFailed != 0 {
+		t.Errorf("stats.DataFailed = %v, want %v", stats.DataFailed, 0)
+	}
+}
+
+// Record the failed delivery of two randomly sized emails and verify that the
+// failed stats show 2 emails and the combined data size.
+func TestStatsFailed(t *testing.T) {
+	var r = rand.New(rand.NewSource(time.Now().UTC().UnixNano()))
+	var n1 = r.Intn(100)
+	var n2 = r.Intn(100)
+
+	stats := Stats{}
+	stats.Failed(n1)
+	if stats.MsgsSent != 0 {
+		t.Errorf("stats.MsgsSent = %v, want %v", stats.MsgsSent, 0)
+	}
+	if stats.MsgsDropped != 0 {
+		t.Errorf("stats.MsgsDropped = %v, want %v", stats.MsgsDropped, 0)
+	}
+	if stats.MsgsFailed != 1 {
+		t.Errorf("stats.MsgsFailed = %v, want %v", stats.MsgsFailed, 1)
+	}
+	if stats.DataSent != 0 {
+		t.Errorf("stats.DataSent = %v, want %v", stats.DataSent, 0)
+	}
+	if stats.DataDropped != 0 {
+		t.Errorf("stats.DataDropped = %v, want %v", stats.DataDropped, 0)
+	}
+	if stats.DataFailed != n1 {
+		t.Errorf("stats.DataFailed = %v, want %v", stats.DataFailed, n1)
+	}
+
+	stats.Failed(n2)
+	if stats.MsgsSent != 0 {
+		t.Errorf("stats.MsgsSent = %v, want %v", stats.MsgsSent, 0)
+	}
+	if stats.MsgsDropped != 0 {
+		t.Errorf("stats.MsgsDropped = %v, want %v", stats.MsgsDropped, 0)
+	}
+	if stats.MsgsFailed != 2 {
+		t.Errorf("stats.MsgsFailed = %v, want %v", stats.MsgsFailed, 2)
+	}
+	if stats.DataSent != 0 {
+		t.Errorf("stats.DataSent = %v, want %v", stats.DataSent, 0)
+	}
+	if stats.DataDropped != 0 {
+		t.Errorf("stats.DataDropped = %v, want %v", stats.DataDropped, 0)
+	}
+	if stats.DataFailed != n1+n2 {
+		t.Errorf("stats.DataFailed = %v, want %v", stats.DataFailed, n1+n2)
 	}
 }
