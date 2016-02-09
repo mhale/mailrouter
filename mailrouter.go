@@ -342,6 +342,16 @@ func main() {
 		log.Printf("Loaded %d routes and %d filters.", len(config.Routes)-1, len(config.Filters))
 	}
 
+	// Create a PID file.
+	if config.Options["PIDFile"] != "" {
+		err := CreatePIDFile()
+		if err != nil {
+			log.Printf("Could not create PID file: %s", err)
+		} else {
+			defer RemovePIDFile()
+		}
+	}
+
 	// Run HTTP server in the background.
 	log.Printf("Mailrouter serving HTTP on %s", *httpAddr)
 	http.HandleFunc("/", indexHandler)
@@ -354,6 +364,8 @@ func main() {
 	log.Printf("Mailrouter serving SMTP on %s", *smtpAddr)
 	err = smtpd.ListenAndServe(*smtpAddr, mailHandler, "Mailrouter", "")
 	if err != nil {
-		log.Fatalf("smtpd.ListenAndServe error: %v", err)
+		log.Printf("smtpd.ListenAndServe error: %v", err)
 	}
+
+	log.Println("Exiting.")
 }

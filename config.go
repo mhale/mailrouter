@@ -10,6 +10,7 @@ type Config struct {
 	sync.RWMutex
 	Routes  map[string]Route
 	Filters map[string]Filter
+	Options map[string]string
 }
 
 // Add the DROP route. Make it the default if there is no existing default route.
@@ -23,6 +24,12 @@ func AddDropRoute() {
 	config.Routes["DROP"] = Route{Id: "DROP", Name: "Drop", IsDefault: dropIsDefault}
 }
 
+func SetDefaultOptions() {
+	if _, exists := config.Options["PIDFile"]; !exists {
+		config.Options["PIDFile"] = ""
+	}
+}
+
 // Load the filter and route configuration from a JSON file.
 // Add the drop route as it must always be present.
 func LoadConfig() error {
@@ -33,7 +40,11 @@ func LoadConfig() error {
 		if config.Filters == nil {
 			config.Filters = map[string]Filter{}
 		}
+		if config.Options == nil {
+			config.Options = map[string]string{}
+		}
 		AddDropRoute()
+		SetDefaultOptions()
 	}()
 
 	data, err := ioutil.ReadFile(*confFile)
@@ -54,11 +65,15 @@ func CloneConfig() *Config {
 	clone := new(Config)
 	clone.Routes = map[string]Route{}
 	clone.Filters = map[string]Filter{}
+	clone.Options = map[string]string{}
 	for k, v := range config.Routes {
 		clone.Routes[k] = v
 	}
 	for k, v := range config.Filters {
 		clone.Filters[k] = v
+	}
+	for k, v := range config.Options {
+		clone.Options[k] = v
 	}
 	return clone
 }
