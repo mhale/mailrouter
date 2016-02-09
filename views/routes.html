@@ -48,6 +48,7 @@
 					<div class="well">
 						<form class="form-horizontal" role="form" id="route-form" accept-charset="UTF-8" method="post" action="/routes/{{.id}}">
 							<input name="_method" value="save" type="hidden" />
+							<input name="isdefault" value="{{.edit.IsDefault}}" type="hidden" />
 							<legend>{{if .edit}}Edit{{else}}Add{{end}} Route</legend>
 							<div class="row">
 
