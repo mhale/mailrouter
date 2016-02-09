@@ -45,21 +45,29 @@
 					<h1 class="page-header">Dashboard</h1>
 
 					<div class="row placeholders">
-						<div class="col-xs-6 col-sm-3 placeholder">
+						<div class="col-xs-6 col-sm-2 placeholder">
 							<h4>{{.stats.MsgsSent}}</h4>
 							<span class="text-muted">Messages sent</span>
 						</div>
-						<div class="col-xs-6 col-sm-3 placeholder">
+						<div class="col-xs-6 col-sm-2 placeholder">
 							<h4>{{.stats.MsgsDropped}}</h4>
 							<span class="text-muted">Messages dropped</span>
 						</div>
-						<div class="col-xs-6 col-sm-3 placeholder">
+						<div class="col-xs-6 col-sm-2 placeholder">
+							<h4>{{.stats.MsgsFailed}}</h4>
+							<span class="text-muted">Messages failed</span>
+						</div>
+						<div class="col-xs-6 col-sm-2 placeholder">
 							<h4>{{.stats.DataSent}} bytes</h4>
 							<span class="text-muted">Data sent</span>
 						</div>
-						<div class="col-xs-6 col-sm-3 placeholder">
+						<div class="col-xs-6 col-sm-2 placeholder">
 							<h4>{{.stats.DataDropped}} bytes</h4>
 							<span class="text-muted">Data dropped</span>
+						</div>
+						<div class="col-xs-6 col-sm-2 placeholder">
+							<h4>{{.stats.DataFailed}} bytes</h4>
+							<span class="text-muted">Data failed</span>
 						</div>
 					</div>
 
