@@ -10,6 +10,9 @@ type Route struct {
 	To        string
 	Hostname  string
 	Port      int
+	AuthType  string
+	Username  string
+	Password  string
 	IsDefault bool
 }
 

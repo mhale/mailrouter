@@ -80,7 +80,15 @@ func mailHandler(origin net.Addr, from string, to []string, data []byte) {
 	}
 
 	// Deliver the mail.
-	err = smtp.SendMail(addr, nil, from, to, data)
+	var auth smtp.Auth
+	auth = nil
+	if route.AuthType == "plain" {
+		auth = smtp.PlainAuth("", route.Username, route.Password, route.Hostname)
+	} else if route.AuthType == "crammd5" {
+		auth = smtp.CRAMMD5Auth(route.Username, route.Password)
+	}
+
+	err = smtp.SendMail(addr, auth, from, to, data)
 	if err != nil {
 		log.Printf("Failed to deliver mail to route %s (%s): %s", route.Name, addr, err)
 		stats.Failed(len(data))
@@ -171,11 +179,14 @@ func routeHandler(w http.ResponseWriter, req *http.Request) {
 			port, _ := strconv.Atoi(req.FormValue("port"))
 			isDefault, _ := strconv.ParseBool(req.FormValue("isdefault"))
 			route := Route{
-				Id:       id,
-				Name:     req.FormValue("routename"),
-				To:       req.FormValue("to"),
-				Hostname: req.FormValue("hostname"),
-				Port:     port,
+				Id:        id,
+				Name:      req.FormValue("routename"),
+				To:        req.FormValue("to"),
+				Hostname:  req.FormValue("hostname"),
+				Port:      port,
+				AuthType:  req.FormValue("authentication"),
+				Username:  req.FormValue("username"),
+				Password:  req.FormValue("password"),
 				IsDefault: isDefault,
 			}
 			config.Routes[id] = route

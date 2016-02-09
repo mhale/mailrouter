@@ -82,41 +82,30 @@
 								<!-- End form left column -->
 
 								<!-- Begin form right column -->
-								<!-- Disabled for now
 								<div class="col-sm-6">
-									<div class="form-group">
-										<label for="authentication" class="col-sm-3 control-label">Use <abbr title="Transport Layer Security">TLS</abbr></label>
-										<div class="col-sm-9">
-											<select class="form-control" name="tls" id="tls">
-												<option>Never</option>
-												<option>If Available</option>
-												<option>Always</option>
-											</select> 
-										</div>
-									</div>
 									<div class="form-group">
 										<label for="authentication" class="col-sm-3 control-label">Authentication</label>
 										<div class="col-sm-9">
 											<select class="form-control" name="authentication" id="authentication">
-												<option value="none">None</option>
-												<option value="password">Password</option>
+												<option value="none"{{if .edit}}{{if eq .edit.AuthType "none"}} selected="selected"{{end}}{{end}}>None</option>
+												<option value="plain"{{if .edit}}{{if eq .edit.AuthType "plain"}} selected="selected"{{end}}{{end}}>PLAIN</option>
+												<option value="crammd5"{{if .edit}}{{if eq .edit.AuthType "crammd5"}} selected="selected"{{end}}{{end}}>CRAM-MD5</option>
 											</select> 
 										</div>
 									</div>
-									<div class="form-group hidden" id="username-group">
+									<div class="form-group{{if .edit}}{{if eq .edit.AuthType "none"}} hidden{{end}}{{else}} hidden{{end}}" id="username-group">
 										<label for="username" class="col-sm-3 control-label">Username</label>
 										<div class="col-sm-9">
-											<input type="text" class="form-control" name="username" id="username" placeholder="username">
+											<input type="text" class="form-control" name="username" id="username" value="{{.edit.Username}}" placeholder="username">
 										</div>
 									</div>
-									<div class="form-group hidden" id="password-group">
-										<label for="password" class="col-sm-3 control-label">Password</label>
+									<div class="form-group{{if .edit}}{{if eq .edit.AuthType "none"}} hidden{{end}}{{else}} hidden{{end}}" id="password-group">
+										<label for="password" class="col-sm-3 control-label" id="password-label">{{if .edit}}{{if eq .edit.AuthType "crammd5"}}Secret{{else}}Password{{end}}{{else}}Password{{end}}</label>
 										<div class="col-sm-9">
-											<input type="password" class="form-control" name="password" id="password" placeholder="password">
+											<input type="password" class="form-control" name="password" id="password" value="{{.edit.Password}}" placeholder="{{if .edit}}{{if eq .edit.AuthType "crammd5"}}secret{{else}}password{{end}}{{else}}password{{end}}">
 										</div>
 									</div>
 								</div>
-								-->
 								<!-- End form right column -->
 
 							</div>

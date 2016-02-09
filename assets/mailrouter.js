@@ -1,11 +1,18 @@
 // Shows or hides the username and password fields when authentication type is changed.
 $("#authentication").change(function() {
-	if ($(this).val() == "password") {
-		$("#username-group").removeClass("hidden").addClass("show");
+	if ($(this).val() == "crammd5") {
+		$("#password").attr("placeholder", "secret");
+		$("#password-label").text("Secret");
 		$("#password-group").removeClass("hidden").addClass("show");
+		$("#username-group").removeClass("hidden").addClass("show");
+	} else if ($(this).val() == "plain") {
+		$("#password").attr("placeholder", "password");
+		$("#password-label").text("Password");
+		$("#password-group").removeClass("hidden").addClass("show");
+		$("#username-group").removeClass("hidden").addClass("show");
 	} else {
-		$("#username-group").removeClass("show").addClass("hidden");
 		$("#password-group").removeClass("show").addClass("hidden");
+		$("#username-group").removeClass("show").addClass("hidden");
 	}
 });
 
