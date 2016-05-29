@@ -66,7 +66,7 @@ func mailHandler(origin net.Addr, from string, to []string, data []byte) {
 	// If the message is to be dropped, record the drop and return.
 	if routeId == "DROP" {
 		stats.Dropped(len(data))
-		logs.Add(originIP, from, to, subject, filterName, "Drop")
+		logs.Add(originIP, from, to, subject, filterName, "Drop", "", "")
 		return
 	}
 
@@ -90,15 +90,14 @@ func mailHandler(origin net.Addr, from string, to []string, data []byte) {
 
 	err = smtp.SendMail(addr, auth, from, to, data)
 	if err != nil {
-		log.Printf("Failed to deliver mail to route %s (%s): %s", route.Name, addr, err)
+		msg := fmt.Sprintf("Failed to deliver mail to route %s (%s): %s", route.Name, addr, err)
+		log.Printf(msg)
 		stats.Failed(len(data))
-		logs.Add(originIP, from, to, subject, filterName, "Failed")
-		return
+		logs.Add(originIP, from, to, subject, filterName, route.Name, "Failed", msg)
+	} else {
+		stats.Sent(len(data))
+		logs.Add(originIP, from, to, subject, filterName, route.Name, "Sent", "")
 	}
-
-	// Record the successful delivery.
-	stats.Sent(len(data))
-	logs.Add(originIP, from, to, subject, filterName, route.Name)
 }
 
 func routeHandler(w http.ResponseWriter, req *http.Request) {

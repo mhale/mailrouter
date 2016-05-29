@@ -27,3 +27,6 @@ $('[data-method]').click(function() {
 	}
 	return false;
 });
+
+// Display tooltips.
+$(".status").tooltip({selector: '[data-toggle="tooltip"]', container: "body"})

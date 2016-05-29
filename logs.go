@@ -16,6 +16,8 @@ type Log struct {
 	Subject  string
 	Filter   string
 	Route    string
+	Status   string
+	Error    string
 }
 
 type LogList struct {
@@ -23,7 +25,7 @@ type LogList struct {
 	Logs []Log
 }
 
-func (ll *LogList) Add(origin net.IP, from string, to []string, subject string, filter string, route string) {
+func (ll *LogList) Add(origin net.IP, from string, to []string, subject string, filter string, route string, status string, error string) {
 	ll.Lock()
 	defer ll.Unlock()
 
@@ -34,6 +36,8 @@ func (ll *LogList) Add(origin net.IP, from string, to []string, subject string, 
 		Subject:  subject,
 		Filter:   filter,
 		Route:    route,
+		Status:   status,
+		Error:    error,
 	}
 
 	// Expand the log list out to the max size.

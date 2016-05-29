@@ -13,7 +13,7 @@ func TestLogListAdd(t *testing.T) {
 
 	// Test that log list grows to MaxLogs in size.
 	for i := 1; i <= MaxLogs; i++ {
-		logs.Add(ip, "From", to, fmt.Sprintf("%d", i), "Filter", "Route")
+		logs.Add(ip, "From", to, fmt.Sprintf("%d", i), "Filter", "Route", "Status", "Error")
 		if len(logs.Logs) != i {
 			t.Errorf("LogList contains %v entries, want %v", len(logs.Logs), i)
 		}
@@ -26,7 +26,7 @@ func TestLogListAdd(t *testing.T) {
 
 	// Test that log list grows no further than MaxLogs in size.
 	for i := 1; i < MaxLogs; i++ {
-		logs.Add(ip, "From", to, fmt.Sprintf("%d", i), "Filter", "Route")
+		logs.Add(ip, "From", to, fmt.Sprintf("%d", i), "Filter", "Route", "Status", "Error")
 		if len(logs.Logs) != MaxLogs {
 			t.Errorf("LogList contains %v entries, want %v", len(logs.Logs), MaxLogs)
 		}

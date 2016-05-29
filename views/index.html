@@ -82,6 +82,7 @@
 									<th>Subject</th>
 									<th>Filter</th>
 									<th>Route</th>
+									<th>Status</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -93,6 +94,8 @@
 									<td>{{$log.Subject}}</td>
 									<td>{{$log.Filter}}</td>
 									<td>{{$log.Route}}</td>
+									{{if eq $log.Error ""}}<td>{{$log.Status}}</td>{{end}}
+									{{if ne $log.Error ""}}<td class="status"><a href="#" data-toggle="tooltip" title="{{$log.Error}}">{{$log.Status}}</a></td>{{end}}
 								</tr>
 								{{end}}
 							</tbody>
