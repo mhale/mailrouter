@@ -38,7 +38,7 @@ func mailHandler(origin net.Addr, from string, to []string, data []byte) {
 	msg, err := mail.ReadMessage(bytes.NewReader(data))
 	if err != nil {
 		log.Printf("Failed to parse message: %s\n", err)
-		log.Printf("Aborting processing of message.")
+		log.Printf("Aborting processing of message from %s.", from)
 		return
 	}
 	subject := msg.Header.Get("Subject")
